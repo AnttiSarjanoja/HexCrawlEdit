@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+	<!-- TODO: Style doesn't cover all elements yet, but I hate css anyways -->
+	<style>
+		* { color: white; background-color: #101010; }
+		input, button { border: 1px solid #333333; background-color: #222222; }
+		.containers { display: inline-block; vertical-align: top; }
+		canvas { float: left; }
+	</style>
+	<meta charset="UTF-8"> 
+	<title>Ummã-Path</title>
+	<script src="rot.min.js"></script>
+</head>
+
+<body oncontextmenu="return false;">
+	<noscript>Please enable javascript!</noscript>
+	
+	<div id="mapContainer" class="containers"></div>
+	<div id="inputContainer" class="containers">
+		<pre id="textHolder">-</pre>
+		<input id="seen" type="checkbox"> Hex has been seen</input>
+		<div id="featureHolder"></div>
+	</div>
+	<div>
+		<div><input id="mapWidth"></input><span> Width (in hexes)</span></div>
+		<div><input id="mapHeight"></input><span> Height (in hexes)</span></div>
+		<div><input id="mapFontsize"></input><span> Map zoom</span></div>
+		<div><input id="mapTranspose" type="checkbox"></input><span> Swap orientation</span></div>
+		<button onclick="Input.applySettings()"> Apply</button>
+		
+		<div><input type='file' id='jsoninput'> Select mapfile to load</input></div>
+		<div><button onclick='load();'>Load data file (JSON)</button></div>
+	</div>
+
+	<pre>
+Hovering hex: Gives info for the hex
+Left click: Create hex / change terrain, can be held down for painting multiple terrain
+Right click: Select hex for editing details
+
+NOTE: Mouse must be over canvas for keys to work!
+'d': Download data.JSON of the map
+'a': Add new point of interest to current hex
+'r': Remove current hex
+'m': Move party to current hex
+'+': Add height to current hex
+'-': Reduce height from current hex
+'s': Take screenshot of current map
+	</pre>
+	<script src="Path.js"></script>
+</body>
+</html>
