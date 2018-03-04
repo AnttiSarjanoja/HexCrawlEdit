@@ -5,7 +5,7 @@ gulp.task('app-typescript', function() {
 	return gulp.src(['App.ts'])
     .on('change', function(file) { console.log(file + " changed."); })
     .pipe(ts({
-        outFile: "Path.js",
+        outFile: "App.js",
         removeComments: true,
         strictNullChecks: true,
         target: "ES6"
