@@ -222,7 +222,11 @@ namespace Input {
 		UI.DISPLAY.getContainer().addEventListener('mousedown', (evt) => {
 			if (evt instanceof MouseEvent) {
 				let loc = UI.DISPLAY.eventToPosition(evt).join(",");
-				if (evt.button === 2) { lock = !lock; UI.updateInfo(); }
+				if (evt.button === 2) {
+					lock = !lock;
+					if (!lock) { currentHex!.update(); }
+					UI.updateInfo();
+				}
 				else {
 					if (data[loc]) {
 						const index = (TRNS.findIndex((v) => v.name === data[loc].terrain.name) + 1) % (TRNS.length);
