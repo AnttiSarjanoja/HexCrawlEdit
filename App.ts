@@ -1,4 +1,5 @@
 /// <reference path="./rot.d.ts" />
+/// <reference path="./jquery-3.3.1.min.d.ts" />
 
 // Major TODO: -list
 // * JQuery
@@ -24,6 +25,7 @@ interface Terrain {
 	obscure: boolean; // Blocks los if on same height, TODO: How to prevent 0-visibility?
 }
 
+// TODO: easily modifiable, autoloaded file for user-defined terrains, e.g. TerrainData.json
 // Static terrain data, chars are borrowed from DF map legend:
 // http://dwarffortresswiki.org/index.php/Map_legend
 let TRNS: Terrain[] = [
@@ -78,12 +80,12 @@ class Hex implements HexData {
 		delete data[this.key];
 	}
 	public update(): void { // Fetch input data
-		this.seen = (<HTMLInputElement>document.getElementById("seen")!).checked;
+		this.seen = (<HTMLInputElement>$("#seen")[0]).checked;
 		if (this.pois) {
 			this.pois.forEach((f, i) => {
-				f.name = (<HTMLInputElement>document.getElementById("name" + i)!).value;
-				f.char = (<HTMLInputElement>document.getElementById("char" + i)!).value;
-				f.hidden = (<HTMLInputElement>document.getElementById("hidden" + i)!).checked;
+				f.name = (<HTMLInputElement>$("#name" + i)[0]).value;
+				f.char = (<HTMLInputElement>$("#char" + i)[0]).value;
+				f.hidden = (<HTMLInputElement>$("#hidden" + i)[0]).checked;
 			});
 		}
 	}
@@ -106,7 +108,7 @@ let currentHex: Hex | undefined;
 let dice = (f: number = 1, t: number = 10): number => ((ROT.RNG.getUniform() * (t - f + 1) + f) | 0)
 
 namespace UI {
-	const lightPasses = (x, y) => {
+	const lightPasses = (x: number, y: number) => {
     var key = x + "," + y;
     return data[key] &&
     	data[partyloc]!.height >= data[key].height &&
@@ -118,10 +120,10 @@ namespace UI {
 	const dim = (c: string, n: number): string => rgbToHex.apply(null, hexToRgb(c).map(v => Math.min(255, (v * n) | 0)))
 
 	// Borrowed https://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb
-	const rgbToHex = (r, g, b) => '#' + [r, g, b].map(x => { const hex = x.toString(16); return hex.length === 1 ? '0' + hex : hex }).join('')
-	const hexToRgb = (hex): [number, number, number] => // NOTE: Works with short form (e.g. #fff)
-	  hex.replace(/^#?([a-f\d])([a-f\d])([a-f\d])$/i, (m, r, g, b) => '#' + r + r + g + g + b + b)
-	  .substring(1).match(/.{2}/g).map(x => parseInt(x, 16))
+	const rgbToHex = (r: number, g: number, b: number) => '#' + [r, g, b].map(x => { const hex = x.toString(16); return hex.length === 1 ? '0' + hex : hex }).join('')
+	const hexToRgb = (hex: string): [number, number, number] => // NOTE: Works with short form (e.g. #fff)
+	  <[number, number, number]>(hex.replace(/^#?([a-f\d])([a-f\d])([a-f\d])$/i, (m, r, g, b) => '#' + r + r + g + g + b + b)
+	  .substring(1).match(/.{2}/g)!.map(x => parseInt(x, 16)))
 
 	export const DISPLAY = new ROT.Display({
 		width: 16,
@@ -158,7 +160,7 @@ namespace UI {
 		}
 	}
 	export const init = (): void => {
-		document.getElementById("mapContainer")!.appendChild(DISPLAY.getContainer());
+		$("#mapContainer")[0].appendChild(DISPLAY.getContainer());
 		// Capture key events only when mouse is over canvas, TODO: There must be a better way for this
 		DISPLAY.getContainer().addEventListener("mouseout",  () => { Input.mouseover = false; });
 		DISPLAY.getContainer().addEventListener("mouseover", () => { Input.mouseover = true; });
@@ -168,8 +170,8 @@ namespace UI {
 		while (featureNode.lastChild) { featureNode.removeChild(featureNode.lastChild); }
 		if (!currentHex) { return; }
 		document.getElementById("textHolder")!.innerHTML = currentHex.info;
-		(<HTMLInputElement>document.getElementById("seen")!).checked = currentHex.seen;
-		(<HTMLInputElement>document.getElementById("seen")!).disabled = !Input.lock;
+		(<HTMLInputElement>$("#seen")[0]).checked = currentHex.seen;
+		(<HTMLInputElement>$("#seen")[0]).disabled = !Input.lock;
 		if (currentHex.pois && currentHex.pois.length > 0) {
 			featureNode.appendChild(document.createElement("p")).innerHTML = " Places of interest: ";
 			currentHex.pois.forEach((f, i) => {
@@ -267,11 +269,11 @@ namespace Input {
 	}
 	export const applySettings = (s?: ROT.DisplayOptions) => {
 		UI.DISPLAY.setOptions(s ? s : {
-			width: +(<HTMLInputElement>document.getElementById("mapWidth")!).value * 2,
-			height: +(<HTMLInputElement>document.getElementById("mapHeight")!).value,
+			width: +(<HTMLInputElement>$("#mapWidth")[0]).value * 2,
+			height: +(<HTMLInputElement>$("#mapHeight")[0]).value,
 			layout: "hex",
-			transpose: !!(<HTMLInputElement>document.getElementById("mapTranspose")!).checked,
-			fontSize: +(<HTMLInputElement>document.getElementById("mapFontsize")!).value
+			transpose: !!(<HTMLInputElement>$("#mapTranspose")[0]).checked,
+			fontSize: +(<HTMLInputElement>$("mapFontsize")[0]).value
 		});
 	}
 }

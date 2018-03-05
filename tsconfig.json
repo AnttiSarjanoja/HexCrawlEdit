@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "outFile": "App.js",
+        "removeComments": true,
+        "strictNullChecks": true,
+        "target": "es6",
+        "noImplicitAny": true,
+        "noImplicitThis": true
+    },
+    "files": [
+        "App.ts"
+    ]
+}
